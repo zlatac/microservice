@@ -1,0 +1,9 @@
+To: styleminions@gmail.com, seyi.adaghe@gmail.com
+Subject: New Sale
+From: Twistedlovebox <contact@twistedlovebox.com>
+X-Mailer: PHP 5.6
+Return-Path: <dim@gmail.com>
+Reply-To: <dim@gmail.com>
+
+dim@gmail.com is about to pay!
+

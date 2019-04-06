@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Movies BonFire</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f42424">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+   <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+<!--    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <style>      
+    .w3-animate-right{
+        position:relative;
+        animation:animateright 0.4s}
+      @keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+      
+      body {
+          text-transform: capitalize;
+      }
+  </style>
+</head>
+<body ng-app="movies" ng-cloack>
+    <div class="container" ng-controller="mCtrl">
+        <div class="row">
+            <h1 class="center-align">Bonfire Movie Collection</h1>
+            <div class="col s12 m5">
+                <div class="input-field">
+                    <input type="text" id="title" ng-model="title">
+                    <label for="title">Title</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="actor" ng-model="actors">
+                    <label for="actor">Actors</label>
+                </div>
+                <div>
+                    <label>Genre</label>
+                    <select class="browser-default" ng-model="genre">
+                        <option ng-repeat="y in genre_list | orderBy:''">{{y}}</option>
+
+                    </select>
+                </div>
+                <br>
+                
+                <button class="waves-effect waves-light btn light-blue" ng-click="update()">
+                    <i class="material-icons">edit</i>
+                </button>
+            </div>
+            
+            <div class="col m7 why">
+                <div class="input-field">
+                   <span class="new badge"  data-badge-caption="" >{{num}}</span>
+                  <i class="medium material-icons prefix">search</i>
+                  <input id="search" type="text" ng-model="searchText" class="validate" ng-keyup="num_check()">
+                  <label for="search">Search</label>
+                </div>
+                <div class="card white z-depth-3 w3-animate-right" ng-repeat="x in data | filter:searchText | orderBy:'title'">
+                    
+                    <div class="card-content black-text">
+                       <div class="row">
+                          <div class="col s2">
+                           <img src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/228180-11f6426ffd4111b5210c38be347f7454-medium_jpg.jpg?buster=1481163776" alt="" class="circle responsive-img">         
+                          </div>
+                          <div class="col s10">
+                              <span class="card-title">{{x.title}}</span>
+                              <p>Genre: {{x.genre}}</p>
+                              <p>Actors: {{x.actors.join(', ')}}</p>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card-action right-align">
+                      <a class="waves-effect waves-light btn orange darken-1" ng-click="del('{{x.title}}')">
+                          <i class="material-icons">delete</i>
+                      </a>
+                    </div>
+                </div>
+                
+<!--
+                <p ng-repeat="x in data | filter:searchText | orderBy:'title'">
+                    Title: {{x.title}} <br>
+                    Genre: {{x.genre}} <br>
+                    Actors: {{x.actors.join(', ')}} <br>
+                    <button ng-click="del('{{x.title}}')">Delete</button>
+
+                </p>
+-->
+
+                
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+    
+    var myapp = angular.module('movies',[]);
+    
+    myapp.controller('mCtrl',['$scope',function($scope){
+        $scope.data = [{title:"Wolverine Return",genre:"action",actors:['jack','katie','henry']},
+                       {title:"Pirates of the carribean",genre:"adventure",actors:['jonny','sung','idahosa']}
+        
+        ];
+        $scope.genre_list = ['Adventure','Action','romance','comedy','sci-fi','thriller','kids','family'];
+        $scope.title = '';
+        $scope.genre = '';
+        $scope.actors = '';
+        $scope.num = $scope.data.length;
+        $scope.update = function(){
+            if($scope.title !== ''){
+                $scope.data.push({title:$scope.title,genre:$scope.genre,actors:$scope.actors.split(',')});
+                $scope.num = $scope.data.length;
+                $scope.title = $scope.genre = $scope.actors = '';
+            }
+        };
+        $scope.del = function(x){
+            $scope.data.pop($scope.data.title = x);
+            $scope.num = $scope.data.length;
+        };
+        $scope.num_check = function(){
+           $scope.num =  angular.element(document.querySelectorAll(".why div.card")).length;
+        }
+    }]);
+</script>
+</html>

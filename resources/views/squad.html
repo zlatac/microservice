@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Squad Money</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f42424">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+   <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+<!--    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <style>      
+    .w3-animate-right{
+        position:relative;
+        animation:animateright 0.4s}
+      @keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+      
+      body {
+          text-transform: capitalize;
+      }
+      h1 {
+          font-family: 'Shadows Into Light', cursive;
+          font-weight: 900;
+          letter-spacing: 9px;
+          font-size: 100px;
+          color: #99337e;
+      }
+  </style>
+</head>
+<body ng-app="movies" ng-cloack>
+    <div class="container" ng-controller="mCtrl">
+        <div class="row">
+            <h1 class="center-align">Squad Money</h1>
+            <div class="col s12 m5">
+                <div class="input-field">
+                    <input type="text" id="title" ng-model="person">
+                    <label for="title">New person</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="actor" ng-model="item">
+                    <label for="actor">Item</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="amount" ng-model="amount">
+                    <label for="amount">Amount</label>
+                </div>
+                <div>
+                    <label>Who paid for {{item}}</label>
+                    <select class="browser-default" ng-model="payee" ng-change="cp()">
+                        <option ng-repeat="y in squad.people | orderBy:'name'" value="{{y.pos}}">
+                            {{y.name}}</option>
+
+                    </select>
+                </div>
+                <div>
+                    <label>Who benefited from {{item}}</label>
+<!--
+                    <select  class="browser-default" ng-model="genre">
+                        <option ng-repeat="y in genre_list | orderBy:''">
+                             {{y}} 
+                        </option>
+
+                    </select>
+-->
+                    <div ng-repeat="y in squad.people | orderBy:''">
+                      <input type="checkbox" id="{{y.name}}"  ng-model="squad.people[y.pos].benefit" ng-true-value="'YES'" ng-false-value="'NO'"/>
+                         <label for="{{y.name}}">{{y.name}}</label>
+                    </div>
+                </div>
+                <br>
+                
+                <button class="waves-effect waves-light btn red" ng-click="person_insert()">
+                    <i class="material-icons">person</i>
+                </button>
+                <button class="waves-effect waves-light btn light-blue" ng-click="add_item()">
+                    <i class="material-icons">edit</i>
+                </button>
+            </div>
+            
+            <div class="col m7 why">
+                <div class="input-field">
+                   <span class="new badge"  data-badge-caption="" >{{num}}</span>
+                  <i class="medium material-icons prefix">search</i>
+                  <input id="search" type="text" ng-model="searchText" class="validate" ng-keyup="num_check()">
+                  <label for="search">Search</label>
+                </div>
+                <div class="card white z-depth-3 w3-animate-right" ng-repeat="x in squad.people | filter:searchText">
+                    
+                    <div class="card-content black-text">
+                       <div class="row">
+                          <div class="col s2">
+                           <img src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/228180-11f6426ffd4111b5210c38be347f7454-medium_jpg.jpg?buster=1481163776" alt="" class="circle responsive-img">         
+                          </div>
+                          <div class="col s10">
+                              <span class="card-title">{{x.name}}</span>
+                              <p>Pos: {{x.pos}}</p>
+                              <p>Paid: {{x.total}}</p>
+                              <p>owe: {{x.total + x.owe}}</p>
+<!--
+                              <p>Genre: {{x.genre}}</p>
+                              <p>Actors: {{x.actors.join(', ')}}</p>
+-->
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card-action right-align">
+                      <a class="waves-effect waves-light btn orange darken-1" ng-click="del(x.pos)">
+                          <i class="material-icons">delete</i>
+                      </a>
+                    </div>
+                </div>
+                
+<!--
+                <p ng-repeat="x in data | filter:searchText | orderBy:'title'">
+                    Title: {{x.title}} <br>
+                    Genre: {{x.genre}} <br>
+                    Actors: {{x.actors.join(', ')}} <br>
+                    <button ng-click="del('{{x.title}}')">Delete</button>
+
+                </p>
+-->
+
+                
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+    
+    var myapp = angular.module('movies',[]);
+    
+    myapp.controller('mCtrl',['$scope',function($scope){
+        $scope.data = [{title:"Wolverine Return",genre:"action",actors:['jack','katie','henry']},
+                       {title:"Pirates of the carribean",genre:"adventure",actors:['jonny','sung','idahosa']}
+        
+        ];
+        $scope.squad = {people:[], items:[]};
+        $scope.genre_list = ['Adventure','Action','romance','comedy','sci-fi','thriller','kids','family'];
+        $scope.person = '';
+        $scope.item = '';
+        $scope.amount = '';
+        $scope.pos = '';
+        $scope.num = $scope.squad.people.length;
+        $scope.update = function(){
+            if($scope.title !== ''){
+                $scope.data.push({title:$scope.title,genre:$scope.genre,actors:$scope.actors.split(',')});
+                $scope.num = $scope.data.length;
+                $scope.title = $scope.genre = $scope.actors = '';
+            }
+        };
+        $scope.del = function(x){
+            x = Number(x);
+            let v = $scope.squad.people;
+            $scope.squad.people.splice(x,1);
+            // recount and update the index position for each person
+            for(let a=0; a<v.length; a++){
+                    v[a].pos = a;                     
+                    
+            }
+            $scope.num = $scope.squad.people.length;
+        };
+        $scope.num_check = function(){
+           $scope.num =  angular.element(document.querySelectorAll(".why div.card")).length;
+        };
+        $scope.person_insert = function(){
+            if($scope.person !== ''){
+                let v = $scope.person.split(',');
+                for(let a=0; a<v.length; a++){
+                    $scope.squad.people.push({name:String(v[a]), pos:$scope.squad.people.length,
+                      total:0, owe:0                       
+                    });
+                    
+                }
+                $scope.num = $scope.squad.people.length;
+            }
+        };
+        $scope.add_item = function(){
+            var a = 0;
+            $scope.squad.items.push({name: $scope.item,price: Number($scope.amount)});
+            $scope.squad.people[$scope.pos].total += Number($scope.amount);
+            //count total benifactors
+            for(x in $scope.squad.people){
+               if($scope.squad.people[x].benefit === 'YES'){
+                   a++;
+               } 
+            }
+            //find the average owed by each benfactor and adjust how much they owe
+            var p = $scope.amount/a;
+            console.log('a = '+a);
+            console.log('p = '+p);
+            for(z in $scope.squad.people){
+               if($scope.squad.people[z].benefit === 'YES'){
+                   $scope.squad.people[z].owe -= p;
+               } 
+            }
+        };
+        $scope.cp = function(){
+            $scope.pos = angular.element(document.querySelector("select"))[0].value;
+            //console.log($scope.pos);
+        };
+    }]);
+</script>
+</html>
