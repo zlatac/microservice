@@ -129,7 +129,7 @@
             <p>Reaction - PRICELESS</p>
        </div>
        <div class="col-sm-6" ng-controller="control_love">
-            <form action="/form" class="" method="post" id="deez" enctype="multipart/form-data">
+            <form id="deez" enctype="multipart/form-data">
               <div class="form-group">
                 <label for="usr">Receiver's Name:</label>
                 <input type="text" class="form-control" name="rname" required>

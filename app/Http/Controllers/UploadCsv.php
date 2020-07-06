@@ -459,7 +459,7 @@ class UploadCsv extends Controller
     public function blessMyRequestClients(Request $request){
         $db_list = [];
         //echo $_POST['rname'];
-        $yz = DB::select("SELECT name, image, city, insta_handle, id FROM bmr_client WHERE client_type != '' ORDER BY name ASC",$db_list);
+        $yz = DB::select("SELECT name, image, city, insta_handle, id, client_type FROM bmr_client WHERE client_type != '' ORDER BY name ASC",$db_list);
         echo json_encode($yz);
     }
     public function blessMyRequestReport(Request $request){
